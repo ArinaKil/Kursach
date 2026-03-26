@@ -1,5 +1,5 @@
 <?php
-    include "../settings/connect_database.php";
+    
 ?>
 <!DOCTYPE html>
 <html lang="ru">
