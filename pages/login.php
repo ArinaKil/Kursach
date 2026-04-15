@@ -18,7 +18,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Вход — Магазин зоотоваров</title>
+    <title>Вход</title>
     <style>
         :root{
             --bg1:#f6fbff;
@@ -222,13 +222,6 @@
 <body>
     <div class="shell">
         <section class="hero" aria-label="Описание магазина">
-            <div class="brand">
-                <div class="logo" aria-hidden="true">PET</div>
-                <div>
-                    <div class="brand-title">Магазин зоотоваров</div>
-                    <div class="brand-sub">Корм • Игрушки • Уход • Аксессуары</div>
-                </div>
-            </div>
 
             <h1>Вход в личный кабинет</h1>
             <p class="lead">
