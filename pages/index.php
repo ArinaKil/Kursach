@@ -209,6 +209,9 @@
 
             <div class="actions">
                 <?php if ($isAuthorized): ?>
+                    <?php if (isset($_SESSION['role']) && (int)$_SESSION['role'] === 1): ?>
+                        <a class="btn btn-light" href="admin.php">Админ-панель</a>
+                    <?php endif; ?>
                     <a class="btn btn-light" href="logout.php">Выйти</a>
                 <?php else: ?>
                     <a class="btn btn-light" href="login.php">Войти</a>
