@@ -5,8 +5,42 @@
         session_start();
     }
 
+    if (isset($_SESSION['role']) && (int)$_SESSION['role'] === 1) {
+        header('Location: admin.php');
+        exit();
+    }
+
     $isAuthorized = !empty($_SESSION['user_id']);
     $userName = trim((string)($_SESSION['fio'] ?? ''));
+
+    if (!isset($_SESSION['cart']) || !is_array($_SESSION['cart'])) {
+        $_SESSION['cart'] = [];
+    }
+
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && $isAuthorized) {
+        $action = $_POST['action'] ?? '';
+        $productId = (int)($_POST['product_id'] ?? 0);
+
+        if ($productId > 0) {
+            $currentQty = (int)($_SESSION['cart'][$productId] ?? 0);
+
+            if ($action === 'add') {
+                $_SESSION['cart'][$productId] = min(99, max(1, $currentQty + 1));
+            } elseif ($action === 'inc') {
+                $_SESSION['cart'][$productId] = min(99, max(1, $currentQty + 1));
+            } elseif ($action === 'dec') {
+                $newQty = $currentQty - 1;
+                if ($newQty <= 0) {
+                    unset($_SESSION['cart'][$productId]);
+                } else {
+                    $_SESSION['cart'][$productId] = $newQty;
+                }
+            }
+        }
+
+        header('Location: index.php');
+        exit();
+    }
 
     $products = [];
     $productsError = null;
@@ -103,8 +137,8 @@
             padding:11px 14px;
             font-weight:700;
             color:#0b1220;
-            background:linear-gradient(135deg, var(--accent2), var(--accent));
-            box-shadow:0 12px 30px rgba(34,197,94,.2);
+            background:#e2e8f0;
+            box-shadow:none;
             text-decoration:none;
             display:inline-flex;
             align-items:center;
@@ -168,6 +202,34 @@
             font-weight:800;
             margin-top:auto;
         }
+        .qty-controls{
+            display:flex;
+            align-items:center;
+            gap:8px;
+            margin-top:6px;
+        }
+        .qty{
+            min-width:36px;
+            text-align:center;
+            font-size:14px;
+            font-weight:700;
+            color:var(--text);
+        }
+        .qty-btn{
+            width:36px;
+            height:36px;
+            border-radius:10px;
+            border:1px solid var(--stroke);
+            background:#fff;
+            color:var(--text);
+            font-size:20px;
+            line-height:1;
+            cursor:pointer;
+            display:inline-flex;
+            align-items:center;
+            justify-content:center;
+            padding:0;
+        }
         .hint{
             margin-top:18px;
             border:1px solid var(--stroke);
@@ -212,6 +274,10 @@
                     <?php if (isset($_SESSION['role']) && (int)$_SESSION['role'] === 1): ?>
                         <a class="btn btn-light" href="admin.php">Админ-панель</a>
                     <?php endif; ?>
+                    <?php if (!isset($_SESSION['role']) || (int)$_SESSION['role'] !== 1): ?>
+                        <a class="btn btn-light" href="account.php">Личный кабинет</a>
+                        <a class="btn btn-light" href="cart.php">Корзина</a>
+                    <?php endif; ?>
                     <a class="btn btn-light" href="logout.php">Выйти</a>
                 <?php else: ?>
                     <a class="btn btn-light" href="login.php">Войти</a>
@@ -241,9 +307,29 @@
                         <div class="price"><?= number_format((float)($product['price'] ?? 0), 0, '.', ' ') ?> руб.</div>
 
                         <?php if ($isAuthorized): ?>
-                            <button class="btn" type="button" data-product-id="<?= (int)($product['id'] ?? 0) ?>">
-                                Добавить в корзину
-                            </button>
+                            <?php $pid = (int)($product['id'] ?? 0); ?>
+                            <?php $cartQty = (int)($_SESSION['cart'][$pid] ?? 0); ?>
+                            <?php if ($cartQty > 0): ?>
+                                <div class="qty-controls">
+                                    <form method="POST">
+                                        <input type="hidden" name="action" value="dec">
+                                        <input type="hidden" name="product_id" value="<?= $pid ?>">
+                                        <button class="qty-btn" type="submit" aria-label="Уменьшить количество">-</button>
+                                    </form>
+                                    <div class="qty"><?= $cartQty ?></div>
+                                    <form method="POST">
+                                        <input type="hidden" name="action" value="inc">
+                                        <input type="hidden" name="product_id" value="<?= $pid ?>">
+                                        <button class="qty-btn" type="submit" aria-label="Увеличить количество">+</button>
+                                    </form>
+                                </div>
+                            <?php else: ?>
+                                <form method="POST">
+                                    <input type="hidden" name="action" value="add">
+                                    <input type="hidden" name="product_id" value="<?= $pid ?>">
+                                    <button class="btn" type="submit">Добавить в корзину</button>
+                                </form>
+                            <?php endif; ?>
                         <?php else: ?>
                             <a class="btn btn-light" href="login.php">Войдите, чтобы добавить</a>
                         <?php endif; ?>

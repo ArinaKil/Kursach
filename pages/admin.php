@@ -296,8 +296,8 @@
         }
         .btn-primary{
             border:none;
-            background:linear-gradient(135deg, var(--accent2), var(--accent));
-            box-shadow:0 10px 24px rgba(34,197,94,.2);
+            background:#e2e8f0;
+            box-shadow:none;
         }
         .btn-danger{
             border:none;
@@ -354,7 +354,6 @@
                 <p class="muted">Управление пользователями, товарами и заказами</p>
             </div>
             <div class="actions">
-                <a class="btn" href="index.php">На главную</a>
                 <a class="btn" href="logout.php">Выйти</a>
             </div>
         </section>

@@ -185,8 +185,8 @@
             padding:12px 14px;
             font-weight:700;
             color:#0b1220;
-            background: linear-gradient(135deg, var(--accent2), var(--accent));
-            box-shadow: 0 14px 34px rgba(34,197,94,.18);
+            background:#e2e8f0;
+            box-shadow:none;
             width:100%;
             transition: transform .06s ease, filter .15s ease;
         }
