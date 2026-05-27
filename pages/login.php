@@ -278,5 +278,60 @@
             </form>
         </section>
     </div>
+
+    <script>
+        (function () {
+            const phone = document.getElementById('phone');
+
+            function formatPhone(digits) {
+                if (digits.length === 0) return '';
+                if (digits[0] === '8') digits = '7' + digits.slice(1);
+                if (digits[0] !== '7') digits = '7' + digits;
+                digits = digits.slice(0, 11);
+
+                let result = '+7';
+                if (digits.length > 1) result += ' (' + digits.slice(1, 4);
+                if (digits.length >= 4) result += ')';
+                if (digits.length >= 5) result += ' ' + digits.slice(4, 7);
+                if (digits.length >= 8) result += '-' + digits.slice(7, 9);
+                if (digits.length >= 10) result += '-' + digits.slice(9, 11);
+                return result;
+            }
+
+            function applyMask() {
+                const digits = phone.value.replace(/\D/g, '');
+                phone.value = formatPhone(digits);
+            }
+
+            phone.addEventListener('focus', function () {
+                if (!phone.value) phone.value = '+7 (';
+            });
+
+            phone.addEventListener('input', applyMask);
+
+            phone.addEventListener('blur', function () {
+                if (phone.value === '+7 (' || phone.value === '+7') phone.value = '';
+            });
+
+            phone.addEventListener('keydown', function (e) {
+                if (e.key === 'Backspace' && phone.selectionStart === phone.value.length) {
+                    const digits = phone.value.replace(/\D/g, '');
+                    if (digits.length > 1) {
+                        e.preventDefault();
+                        phone.value = formatPhone(digits.slice(0, -1));
+                    }
+                }
+            });
+
+            phone.addEventListener('paste', function (e) {
+                e.preventDefault();
+                const text = (e.clipboardData || window.clipboardData).getData('text');
+                const digits = (phone.value + text).replace(/\D/g, '');
+                phone.value = formatPhone(digits);
+            });
+
+            if (phone.value) applyMask();
+        })();
+    </script>
 </body>
 </html>
