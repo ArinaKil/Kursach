@@ -433,18 +433,19 @@
                                 <div>
                                     <h2><?= htmlspecialchars($p['name']) ?></h2>
                                     <p class="meta">Цена: <?= number_format((float)$p['price'], 0, '.', ' ') ?> руб. / шт.</p>
-                                    <div class="price">
+                                    <div class="price" id="line-total-<?= (int)$p['id'] ?>">
                                         Итого: <?= number_format((float)$p['lineTotal'], 0, '.', ' ') ?> руб.
                                     </div>
 
                                     <div class="row">
-                                        <form method="POST" action="cart.php" style="flex:1;min-width:180px;">
+                                        <form method="POST" action="cart.php" style="flex:1;min-width:180px;" class="qty-form">
                                             <input type="hidden" name="action" value="update_qty">
                                             <input type="hidden" name="product_id" value="<?= (int)$p['id'] ?>">
-                                            <input type="number" name="qty" min="1" max="99" value="<?= (int)$p['qty'] ?>">
-                                            <div class="row">
-                                                <button class="btn btn-light" type="submit">Обновить</button>
-                                            </div>
+                                            <input type="number" name="qty" min="1" max="99" value="<?= (int)$p['qty'] ?>"
+                                                   class="qty-input"
+                                                   data-price="<?= (float)$p['price'] ?>"
+                                                   data-id="<?= (int)$p['id'] ?>"
+                                                   onchange="this.form.submit()">
                                         </form>
 
                                         <form method="POST" action="cart.php" style="min-width:140px;">
@@ -466,7 +467,7 @@
                     <table>
                         <tr>
                             <th>Сумма</th>
-                            <td><?= number_format((float)$total, 0, '.', ' ') ?> руб.</td>
+                            <td id="grand-total"><?= number_format((float)$total, 0, '.', ' ') ?> руб.</td>
                         </tr>
                     </table>
                     <form method="POST" action="cart.php">
@@ -479,6 +480,29 @@
             <?php endif; ?>
         </section>
     </main>
+<script>
+document.querySelectorAll('.qty-input').forEach(function(input) {
+    input.addEventListener('input', function() {
+        var qty = Math.max(1, Math.min(99, parseInt(this.value) || 1));
+        var price = parseFloat(this.dataset.price) || 0;
+        var id = this.dataset.id;
+        var lineEl = document.getElementById('line-total-' + id);
+        if (lineEl) {
+            var lineTotal = price * qty;
+            lineEl.textContent = 'Итого: ' + lineTotal.toLocaleString('ru-RU', {maximumFractionDigits: 0}) + ' руб.';
+        }
+        var grandTotal = 0;
+        document.querySelectorAll('.qty-input').forEach(function(inp) {
+            var q = Math.max(1, Math.min(99, parseInt(inp.value) || 1));
+            grandTotal += (parseFloat(inp.dataset.price) || 0) * q;
+        });
+        var grandEl = document.getElementById('grand-total');
+        if (grandEl) {
+            grandEl.textContent = grandTotal.toLocaleString('ru-RU', {maximumFractionDigits: 0}) + ' руб.';
+        }
+    });
+});
+</script>
 </body>
 </html>
 

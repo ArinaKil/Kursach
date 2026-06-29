@@ -102,8 +102,8 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `fio`, `phone`, `password_hash`, `role`) VALUES
-(1, 'Килунина Арина', '+7(999)999-99-99', '$2y$10$N/MlsTYY2VTdG9GTX3fZB.Q9NCCZvbcCDwnZeUQquB6jGNKJp2vCS', 0),
-(2, 'Админ', '+7(999)999-99-98', '$2y$10$FrYOeIoeuMim95xIY8Ct8.97IqhP3iSojDdQo2b0SLH3jIkTuB.ta', 1);
+(1, 'Килунина Арина', '+7 (999) 999-99-99', '$2y$10$N/MlsTYY2VTdG9GTX3fZB.Q9NCCZvbcCDwnZeUQquB6jGNKJp2vCS', 0),
+(2, 'Админ', '+7 (999) 999-99-98', '$2y$10$FrYOeIoeuMim95xIY8Ct8.97IqhP3iSojDdQo2b0SLH3jIkTuB.ta', 1);
 
 --
 -- Индексы сохранённых таблиц
